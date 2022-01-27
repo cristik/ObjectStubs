@@ -10,8 +10,8 @@ import Foundation
 
 fileprivate var originalIMPs = [Method: IMP]()
 
-enum ObjectStubs {
-    static func replace<T: NSObject>(instanceMethod selector: Selector, of cls: T.Type, with body: @escaping (T) -> Void) {
+public enum ObjectStubs {
+    public static func replace<T: NSObject>(instanceMethod selector: Selector, of cls: T.Type, with body: @escaping (T) -> Void) {
         let method = class_getInstanceMethod(cls, selector)!
         let stub = imp_implementationWithBlock({ body($0 as! T) } as @convention(block) (NSObject) -> Void)
         let originalIMP = method_setImplementation(method, stub)
@@ -20,7 +20,7 @@ enum ObjectStubs {
         }
     }
     
-    static func restore() {
+    public static func restore() {
         originalIMPs.forEach { method, originalIMP in
             method_setImplementation(method, originalIMP)
         }
